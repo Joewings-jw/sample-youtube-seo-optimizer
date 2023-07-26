@@ -1,0 +1,85 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md">
+      <h4 class="my-4 text-center">YouTube SEO Optimizer</h4>
+      <div class="mt-1" style="outline: 1px solid silver; padding: 2em">
+        <div class="form-group">
+          <label for="youtubeUrlInput">YouTube URL:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="youtubeUrlInput"
+            placeholder="Enter YouTube URL"
+          />
+        </div>
+        <button id="optimizeButton" class="btn btn-primary my-3">
+          Optimize SEO
+        </button>
+        <div
+          class="spinner-border text-primary mt-2"
+          role="status"
+          id="optimizeSpinner"
+          style="display: none"
+        ></div>
+        <div class="output-container">
+          <pre
+            id="optimizedText"
+            class="mt-2"
+          ><span class="text-muted">Output here...</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let optimizeButton = document.getElementById("optimizeButton");
+    let youtubeUrlInput = document.getElementById("youtubeUrlInput");
+    let optimizedText = document.getElementById("optimizedText");
+    let optimizeSpinner = document.getElementById("optimizeSpinner");
+
+    optimizeButton.addEventListener("click", async function () {
+      const youtubeUrl = youtubeUrlInput.value.trim();
+      console.log("YouTube URL:", youtubeUrl);
+      if (!youtubeUrl) {
+        optimizedText.innerHTML = "Please enter a valid YouTube URL.";
+        return;
+      }
+
+      // Show the spinner before starting the optimization
+      optimizeSpinner.style.display = "block";
+
+      try {
+        const response = await fetch("/youtube_seo_optimizer", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ url: youtubeUrl }),
+        });
+
+        const data = await response.json();
+        if (data.error) {
+          optimizedText.innerHTML = data.error;
+        } else {
+          console.log(data);
+          optimizedText.innerHTML = data.optimized_text;
+        }
+
+        // Hide the spinner after the optimization is complete
+        optimizeSpinner.style.display = "none";
+      } catch (error) {
+        optimizedText.innerHTML = "An error occurred while optimizing the SEO.";
+        console.error(error);
+
+        // Hide the spinner on error as well
+        optimizeSpinner.style.display = "none";
+      }
+    });
+  });
+</script>
+
+{% endblock %}
