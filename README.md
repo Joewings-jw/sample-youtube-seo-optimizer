@@ -63,11 +63,11 @@ flask run
 
 ## Form template
 
-![Alt Text](images/form_without_data.png)
+![Alt Text](api/images/form_without_data.png)
 
 ## File input success with sample SEO optmizations 
 
-![Alt Text](images/form_data.png)
+![Alt Text](api/images/form_data.png)
 
 
 ### Error Handling
